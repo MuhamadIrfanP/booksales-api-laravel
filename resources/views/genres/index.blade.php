@@ -23,7 +23,7 @@
     </table>
 
     <p>
-        <a href="{{ route('authors.index') }}">Lihat Data Author</a>
+        <a href="/api/authors">Lihat Data Author</a>
     </p>
 </body>
 </html>

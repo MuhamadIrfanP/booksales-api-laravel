@@ -8,8 +8,12 @@ class AuthorController extends Controller
 {
     public function index()
     {
-        $authors = Author::with('books')->get();
+        $authors = Author::all();
 
-        return view('authors.index', compact('authors'));
+        return response()->json([
+            "success" => true,
+            "message" => "Get all resources",
+            "data" => $authors
+        ], 200);
     }
 }
