@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
-    // Read all data
     public function index()
     {
         $authors = Author::all();
@@ -19,7 +18,6 @@ class AuthorController extends Controller
         ], 200);
     }
 
-    // Create data
     public function store(Request $request)
     {
         $request->validate([
@@ -35,5 +33,68 @@ class AuthorController extends Controller
             "message" => "Resource created successfully",
             "data" => $author
         ], 201);
+    }
+
+    public function show($id)
+    {
+        $author = Author::find($id);
+
+        if (!$author) {
+            return response()->json([
+                "success" => false,
+                "message" => "Author not found"
+            ], 404);
+        }
+
+        return response()->json([
+            "success" => true,
+            "message" => "Get resource successfully",
+            "data" => $author
+        ], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $author = Author::find($id);
+
+        if (!$author) {
+            return response()->json([
+                "success" => false,
+                "message" => "Author not found"
+            ], 404);
+        }
+
+        $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'photo' => 'sometimes|required|string|max:255',
+            'bio' => 'sometimes|required|string'
+        ]);
+
+        $author->update($request->all());
+
+        return response()->json([
+            "success" => true,
+            "message" => "Resource updated successfully",
+            "data" => $author
+        ], 200);
+    }
+
+    public function destroy($id)
+    {
+        $author = Author::find($id);
+
+        if (!$author) {
+            return response()->json([
+                "success" => false,
+                "message" => "Author not found"
+            ], 404);
+        }
+
+        $author->delete();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Resource deleted successfully"
+        ], 200);
     }
 }
