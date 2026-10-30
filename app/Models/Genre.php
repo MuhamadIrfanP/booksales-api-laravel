@@ -2,16 +2,11 @@
 
 namespace App\Models;
 
-class Genre
+use Illuminate\Database\Eloquent\Model;
+
+class Genre extends Model
 {
-    public function getAll()
-    {
-        return [
-            ['id' => 1, 'name' => 'Fiksi'],
-            ['id' => 2, 'name' => 'Teknologi'],
-            ['id' => 3, 'name' => 'Pendidikan'],
-            ['id' => 4, 'name' => 'Romance'],
-            ['id' => 5, 'name' => 'Sejarah'],
-        ];
-    }
+    public $timestamps = false;
+
+    protected $fillable = ['name', 'description'];
 }
