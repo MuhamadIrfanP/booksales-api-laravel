@@ -12,5 +12,4 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource('genres', GenreController::class);
 Route::apiResource('authors', AuthorController::class);
-
-Route::get('/books', [BookController::class, 'index']);
+Route::apiResource('books', BookController::class);
