@@ -16,11 +16,15 @@ class Book extends Model
         'stock',
         'cover_photo',
         'genre_id',
-        'author_id'
     ];
 
     public function author()
     {
         return $this->belongsTo(Author::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\GenreController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TransactionController;
 
 // =====================================
 // ROUTE LOGIN DAN LOGOUT
@@ -68,5 +69,28 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::put('/books/{id}', [BookController::class, 'update']);
     Route::patch('/books/{id}', [BookController::class, 'update']);
     Route::delete('/books/{id}', [BookController::class, 'destroy']);
+
+});
+
+
+// =====================================
+// ROUTE TRANSAKSI
+// =====================================
+
+// Customer (harus login)
+Route::middleware(['auth:sanctum', 'customer'])->group(function () {
+
+    Route::post('/transactions', [TransactionController::class, 'store']);
+    Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+    Route::put('/transactions/{id}', [TransactionController::class, 'update']);
+    Route::patch('/transactions/{id}', [TransactionController::class, 'update']);
+
+});
+
+// Admin (harus login sebagai admin)
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
+    Route::get('/transactions', [TransactionController::class, 'index']);
+    Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']);
 
 });
