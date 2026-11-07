@@ -9,8 +9,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransactionController;
 
 // =====================================
-// ROUTE LOGIN DAN LOGOUT
+// ROUTE REGISTER LOGIN DAN LOGOUT
 // =====================================
+
+// Register
+Route::post('/register', [AuthController::class, 'register']);
 
 // Login
 Route::post('/login', [AuthController::class, 'login']);

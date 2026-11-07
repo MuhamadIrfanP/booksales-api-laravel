@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -27,12 +28,23 @@ class BookController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'cover_photo' => 'required|string|max:255',
+            'cover_photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'genre_id' => 'required|exists:genres,id',
             'author_id' => 'required|exists:authors,id'
         ]);
 
-        $book = Book::create($request->all());
+        // Simpan gambar ke storage/app/public/books
+        $coverPath = $request->file('cover_photo')->store('books', 'public');
+
+        $book = Book::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'cover_photo' => $coverPath,
+            'genre_id' => $request->genre_id,
+            'author_id' => $request->author_id
+        ]);
 
         return response()->json([
             "success" => true,
@@ -77,12 +89,31 @@ class BookController extends Controller
             'description' => 'sometimes|required|string',
             'price' => 'sometimes|required|numeric|min:0',
             'stock' => 'sometimes|required|integer|min:0',
-            'cover_photo' => 'sometimes|required|string|max:255',
+            'cover_photo' => 'sometimes|required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'genre_id' => 'sometimes|required|exists:genres,id',
             'author_id' => 'sometimes|required|exists:authors,id'
         ]);
 
-        $book->update($request->all());
+        $data = $request->only([
+            'title',
+            'description',
+            'price',
+            'stock',
+            'genre_id',
+            'author_id'
+        ]);
+
+        // Jika ada gambar baru, simpan dan hapus gambar lama
+        if ($request->hasFile('cover_photo')) {
+            if ($book->cover_photo) {
+                Storage::disk('public')->delete($book->cover_photo);
+            }
+
+            $data['cover_photo'] = $request->file('cover_photo')
+                ->store('books', 'public');
+        }
+
+        $book->update($data);
 
         return response()->json([
             "success" => true,
@@ -101,6 +132,11 @@ class BookController extends Controller
                 "success" => false,
                 "message" => "Book not found"
             ], 404);
+        }
+
+        // Hapus gambar dari storage
+        if ($book->cover_photo) {
+            Storage::disk('public')->delete($book->cover_photo);
         }
 
         $book->delete();
